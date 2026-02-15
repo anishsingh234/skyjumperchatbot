@@ -1,9 +1,36 @@
 "use server";
 
 import { PDFParse } from "pdf-parse";
+import { createRequire } from "node:module";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { index } from "@/lib/pinecone";
 import { generateEmbeddings } from "@/lib/embedding";
 import { chunkContent } from "@/lib/chunking";
+
+const require = createRequire(import.meta.url);
+
+declare global {
+  var pdfjsWorker: { WorkerMessageHandler?: unknown } | undefined;
+}
+
+let pdfWorkerSetupPromise: Promise<void> | null = null;
+
+async function configurePdfWorker() {
+  if (!pdfWorkerSetupPromise) {
+    pdfWorkerSetupPromise = (async () => {
+      const pdfParseEntry = require.resolve("pdf-parse");
+      const pdfParseRoot = path.dirname(path.dirname(path.dirname(path.dirname(pdfParseEntry))));
+      const workerPath = path.join(pdfParseRoot, "dist", "worker", "pdf.worker.mjs");
+      const workerModule = await import(pathToFileURL(workerPath).href);
+
+      globalThis.pdfjsWorker = workerModule;
+      PDFParse.setWorker(pathToFileURL(workerPath).href);
+    })();
+  }
+
+  await pdfWorkerSetupPromise;
+}
 
 export async function processPdfFile(formData: FormData) {
   try {

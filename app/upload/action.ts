@@ -47,8 +47,6 @@ export async function processPdfFile(formData: FormData) {
     const bytes = await file.arrayBuffer();
     const data = new Uint8Array(bytes);
 
-    await configurePdfWorker();
-
     let parsedText = "";
     const parser = new PDFParse({ data });
 

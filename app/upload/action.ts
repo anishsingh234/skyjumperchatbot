@@ -1,9 +1,21 @@
 "use server";
 
 import { PDFParse } from "pdf-parse";
+import { getData as getPdfWorkerDataUrl } from "pdf-parse/worker";
 import { index } from "@/lib/pinecone";
 import { generateEmbeddings } from "@/lib/embedding";
 import { chunkContent } from "@/lib/chunking";
+
+let isPdfWorkerConfigured = false;
+
+function configurePdfWorker() {
+  if (isPdfWorkerConfigured) {
+    return;
+  }
+
+  PDFParse.setWorker(getPdfWorkerDataUrl());
+  isPdfWorkerConfigured = true;
+}
 
 export async function processPdfFile(formData: FormData) {
   try {
@@ -16,25 +28,30 @@ export async function processPdfFile(formData: FormData) {
       };
     }
 
-    // Convert File to Buffer
+    // Convert File to Uint8Array
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const data = new Uint8Array(bytes);
 
-    // ✅ Same working parsing method
-    const parser = new PDFParse({ data: buffer });
-    const data = await parser.getText();
+    configurePdfWorker();
 
-    if (!data.text || data.text.trim().length === 0) {
+    let parsedText = "";
+    const parser = new PDFParse({ data });
+
+    try {
+      const result = await parser.getText();
+      parsedText = result.text;
+    } finally {
+      await parser.destroy();
+    }
+
+    if (!parsedText || parsedText.trim().length === 0) {
       return {
         success: false,
         error: "No text found in PDF",
       };
     }
 
-    // 1️⃣ Chunk
-    const chunks = await chunkContent(data.text);
-
-    // 2️⃣ Generate embeddings
+    const chunks = await chunkContent(parsedText);
     const embeddings = await generateEmbeddings(chunks);
 
     if (embeddings.length !== chunks.length) {
@@ -46,7 +63,6 @@ export async function processPdfFile(formData: FormData) {
 
     const timestamp = Date.now();
 
-    // 3️⃣ Prepare Pinecone vectors
     const vectors = chunks.map((chunk, i) => ({
       id: `pdf-${timestamp}-${i}`,
       values: embeddings[i],
@@ -57,7 +73,6 @@ export async function processPdfFile(formData: FormData) {
       },
     }));
 
-    // 4️⃣ Batch upsert (safe for large PDFs)
     const batchSize = 100;
     for (let i = 0; i < vectors.length; i += batchSize) {
       await index.upsert({
@@ -69,12 +84,12 @@ export async function processPdfFile(formData: FormData) {
       success: true,
       message: `Created ${vectors.length} searchable chunks`,
     };
-
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown PDF parsing error";
     console.error("PDF processing error:", error);
     return {
       success: false,
-      error: "Failed to process PDF",
+      error: `Failed to process PDF: ${message}`,
     };
   }
 }

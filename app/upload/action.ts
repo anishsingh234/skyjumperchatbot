@@ -9,19 +9,27 @@ import { generateEmbeddings } from "@/lib/embedding";
 import { chunkContent } from "@/lib/chunking";
 
 const require = createRequire(import.meta.url);
-let isPdfWorkerConfigured = false;
 
-function configurePdfWorker() {
-  if (isPdfWorkerConfigured) {
-    return;
+declare global {
+  var pdfjsWorker: { WorkerMessageHandler?: unknown } | undefined;
+}
+
+let pdfWorkerSetupPromise: Promise<void> | null = null;
+
+async function configurePdfWorker() {
+  if (!pdfWorkerSetupPromise) {
+    pdfWorkerSetupPromise = (async () => {
+      const pdfParseEntry = require.resolve("pdf-parse");
+      const pdfParseRoot = path.dirname(path.dirname(path.dirname(path.dirname(pdfParseEntry))));
+      const workerPath = path.join(pdfParseRoot, "dist", "worker", "pdf.worker.mjs");
+      const workerModule = await import(pathToFileURL(workerPath).href);
+
+      globalThis.pdfjsWorker = workerModule;
+      PDFParse.setWorker(pathToFileURL(workerPath).href);
+    })();
   }
 
-  const pdfParseEntry = require.resolve("pdf-parse");
-  const pdfParseRoot = path.dirname(path.dirname(path.dirname(path.dirname(pdfParseEntry))));
-  const workerPath = path.join(pdfParseRoot, "dist", "worker", "pdf.worker.mjs");
-
-  PDFParse.setWorker(pathToFileURL(workerPath).href);
-  isPdfWorkerConfigured = true;
+  await pdfWorkerSetupPromise;
 }
 
 export async function processPdfFile(formData: FormData) {
@@ -39,7 +47,7 @@ export async function processPdfFile(formData: FormData) {
     const bytes = await file.arrayBuffer();
     const data = new Uint8Array(bytes);
 
-    configurePdfWorker();
+    await configurePdfWorker();
 
     let parsedText = "";
     const parser = new PDFParse({ data });

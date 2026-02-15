@@ -79,7 +79,6 @@ export async function processPdfFile(formData: FormData) {
 
     const timestamp = Date.now();
 
-    // 3️⃣ Prepare Pinecone vectors
     const vectors = chunks.map((chunk, i) => ({
       id: `pdf-${timestamp}-${i}`,
       values: embeddings[i],
@@ -90,7 +89,6 @@ export async function processPdfFile(formData: FormData) {
       },
     }));
 
-    // 4️⃣ Batch upsert (safe for large PDFs)
     const batchSize = 100;
     for (let i = 0; i < vectors.length; i += batchSize) {
       await index.upsert({
@@ -102,7 +100,6 @@ export async function processPdfFile(formData: FormData) {
       success: true,
       message: `Created ${vectors.length} searchable chunks`,
     };
-
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown PDF parsing error";
     console.error("PDF processing error:", error);

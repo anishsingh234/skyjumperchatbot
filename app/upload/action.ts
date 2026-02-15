@@ -16,15 +16,21 @@ export async function processPdfFile(formData: FormData) {
       };
     }
 
-    // Convert File to Buffer
+    // Convert File to Buffer/Uint8Array
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const data = new Uint8Array(bytes);
 
-    // ✅ Same working parsing method
-    const parser = new PDFParse({ data: buffer });
-    const data = await parser.getText();
+    let parsedText = "";
+    const parser = new PDFParse({ data });
 
-    if (!data.text || data.text.trim().length === 0) {
+    try {
+      const result = await parser.getText();
+      parsedText = result.text;
+    } finally {
+      await parser.destroy();
+    }
+
+    if (!parsedText || parsedText.trim().length === 0) {
       return {
         success: false,
         error: "No text found in PDF",
@@ -32,7 +38,7 @@ export async function processPdfFile(formData: FormData) {
     }
 
     // 1️⃣ Chunk
-    const chunks = await chunkContent(data.text);
+    const chunks = await chunkContent(parsedText);
 
     // 2️⃣ Generate embeddings
     const embeddings = await generateEmbeddings(chunks);
@@ -71,10 +77,11 @@ export async function processPdfFile(formData: FormData) {
     };
 
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown PDF parsing error";
     console.error("PDF processing error:", error);
     return {
       success: false,
-      error: "Failed to process PDF",
+      error: `Failed to process PDF: ${message}`,
     };
   }
 }

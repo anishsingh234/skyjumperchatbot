@@ -4,9 +4,8 @@
 import { useState } from "react";
 import { processPdfFile } from "./action";
 import { Card, CardContent } from "@/components/ui/card";
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, Upload, FileText, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Upload, FileText, CheckCircle2, XCircle, Sparkles, Shield, Zap } from "lucide-react";
 
 export default function PDFUpload() {
   const [isLoading, setIsLoading] = useState(false);
@@ -82,48 +81,51 @@ export default function PDFUpload() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-6 flex justify-center">
-            <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm">
-              <FileText className="h-12 w-12 text-white" />
+      <div className="bg-gradient-to-r from-orange-500 to-orange-600 py-12 sm:py-16 px-4">
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="mb-4 sm:mb-6 flex justify-center">
+            <div className="relative">
+              <div className="absolute inset-0 bg-white blur-2xl opacity-30 rounded-full"></div>
+              <div className="relative rounded-2xl bg-white/20 p-3 sm:p-4 backdrop-blur-sm shadow-2xl">
+                <FileText className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
+              </div>
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-            Upload Medical Documents
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4 drop-shadow-lg px-4">
+            Upload Your Documents
           </h1>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-            Upload your cancer-related medical documents for AI-powered analysis and personalized guidance
+          <p className="text-base sm:text-lg md:text-xl text-orange-100 max-w-2xl mx-auto px-4">
+            Share your event details, requirements, or any documents for personalized assistance
           </p>
           
           {/* Trust Badges */}
-          <div className="mt-8 flex flex-wrap justify-center gap-6">
-            <div className="flex items-center gap-2 text-white/90">
-              <CheckCircle2 className="h-5 w-5" />
-              <span className="text-sm font-medium">Secure & Private</span>
+          <div className="mt-6 sm:mt-8 flex flex-wrap justify-center gap-3 sm:gap-6 px-4">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-white/95 bg-white/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full backdrop-blur-sm">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-medium">Secure & Private</span>
             </div>
-            <div className="flex items-center gap-2 text-white/90">
-              <CheckCircle2 className="h-5 w-5" />
-              <span className="text-sm font-medium">HIPAA Compliant</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 text-white/95 bg-white/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full backdrop-blur-sm">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-medium">Fast Processing</span>
             </div>
-            <div className="flex items-center gap-2 text-white/90">
-              <CheckCircle2 className="h-5 w-5" />
-              <span className="text-sm font-medium">Instant Processing</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 text-white/95 bg-white/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full backdrop-blur-sm">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-medium">Instant Support</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Upload Section */}
-      <div className="py-12 px-4">
-        <div className="max-w-4xl mx-auto">
+      <div className="py-8 sm:py-12 px-4">
+        <div className="max-w-5xl mx-auto">
           {/* Upload Card */}
-          <Card className="border-2 border-gray-200 shadow-2xl shadow-indigo-500/10 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5 p-1">
-              <CardContent className="pt-8 pb-8 bg-white">
-                <div className="space-y-6">
+          <Card className="border-2 border-orange-200 shadow-2xl shadow-orange-500/10 overflow-hidden">
+            <div className="bg-gradient-to-r from-orange-500/5 via-orange-400/5 to-orange-500/5 p-0.5 sm:p-1">
+              <CardContent className="pt-6 sm:pt-8 pb-6 sm:pb-8 bg-white">
+                <div className="space-y-4 sm:space-y-6">
                   {/* Drag and Drop Area */}
                   <div
                     onDragEnter={handleDrag}
@@ -131,11 +133,11 @@ export default function PDFUpload() {
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
                     className={`
-                      relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300
+                      relative border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center transition-all duration-300
                       ${
                         dragActive
-                          ? "border-indigo-500 bg-indigo-50 scale-[1.02]"
-                          : "border-gray-300 bg-gray-50 hover:border-indigo-400 hover:bg-indigo-50/50"
+                          ? "border-orange-500 bg-orange-50 scale-[1.02]"
+                          : "border-orange-300 bg-orange-50/50 hover:border-orange-400 hover:bg-orange-50"
                       }
                       ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
                     `}
@@ -149,37 +151,40 @@ export default function PDFUpload() {
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
                     />
 
-                    <div className="flex flex-col items-center gap-4">
+                    <div className="flex flex-col items-center gap-3 sm:gap-4">
                       {isLoading ? (
                         <>
-                          <div className="rounded-full bg-indigo-100 p-6">
-                            <Loader2 className="h-12 w-12 text-indigo-600 animate-spin" />
+                          <div className="rounded-full bg-orange-100 p-4 sm:p-6">
+                            <Loader2 className="h-10 w-10 sm:h-12 sm:w-12 text-orange-600 animate-spin" />
                           </div>
-                          <div className="space-y-2">
-                            <p className="text-lg font-semibold text-gray-700">
+                          <div className="space-y-1 sm:space-y-2">
+                            <p className="text-base sm:text-lg font-semibold text-gray-800">
                               Processing your document...
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs sm:text-sm text-gray-500">
                               This may take a few moments
                             </p>
                           </div>
                         </>
                       ) : (
                         <>
-                          <div className="rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-6 shadow-lg shadow-indigo-500/30">
-                            <Upload className="h-12 w-12 text-white" />
+                          <div className="relative">
+                            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 blur-xl opacity-30 rounded-full"></div>
+                            <div className="relative rounded-full bg-gradient-to-br from-orange-500 to-orange-600 p-4 sm:p-6 shadow-xl shadow-orange-500/30">
+                              <Upload className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
+                            </div>
                           </div>
-                          <div className="space-y-2">
-                            <p className="text-lg font-semibold text-gray-700">
+                          <div className="space-y-1 sm:space-y-2">
+                            <p className="text-base sm:text-lg font-semibold text-gray-800 px-4">
                               {dragActive ? "Drop your file here" : "Drag & drop your PDF here"}
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs sm:text-sm text-gray-500">
                               or click to browse files
                             </p>
                           </div>
-                          <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg">
-                            <FileText className="h-4 w-4 text-gray-400" />
-                            <span className="text-xs text-gray-600 font-medium">
+                          <div className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white border-2 border-orange-200 rounded-lg shadow-sm">
+                            <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
+                            <span className="text-xs sm:text-sm text-gray-700 font-medium">
                               Supported format: PDF
                             </span>
                           </div>
@@ -201,17 +206,17 @@ export default function PDFUpload() {
                         }
                       `}
                     >
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start gap-2 sm:gap-3">
                         {message.type === "error" ? (
-                          <XCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                          <XCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-600 mt-0.5 flex-shrink-0" />
                         ) : (
-                          <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                          <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         )}
-                        <div className="flex-1">
-                          <AlertTitle className="text-base font-semibold">
+                        <div className="flex-1 min-w-0">
+                          <AlertTitle className="text-sm sm:text-base font-semibold">
                             {message.type === "error" ? "Upload Failed" : "Success!"}
                           </AlertTitle>
-                          <AlertDescription className="text-sm mt-1">
+                          <AlertDescription className="text-xs sm:text-sm mt-1">
                             {message.text}
                           </AlertDescription>
                         </div>
@@ -224,41 +229,76 @@ export default function PDFUpload() {
           </Card>
 
           {/* Info Section */}
-          <div className="mt-8 grid md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
-              <div className="rounded-lg bg-blue-100 w-12 h-12 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+          <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {/* Card 1 */}
+            <div className="bg-white rounded-xl p-5 sm:p-6 shadow-md border-2 border-orange-100 hover:shadow-xl hover:border-orange-200 transition-all">
+              <div className="rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mb-3 sm:mb-4">
+                <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Private & Secure</h3>
-              <p className="text-sm text-gray-600">
-                Your documents are encrypted and processed securely. We never share your data.
+              <h3 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">Private & Secure</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Your documents are encrypted and processed securely. We never share your data with third parties.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
-              <div className="rounded-lg bg-indigo-100 w-12 h-12 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+            {/* Card 2 */}
+            <div className="bg-white rounded-xl p-5 sm:p-6 shadow-md border-2 border-orange-100 hover:shadow-xl hover:border-orange-200 transition-all">
+              <div className="rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mb-3 sm:mb-4">
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Fast Processing</h3>
-              <p className="text-sm text-gray-600">
-                Advanced AI analyzes your documents in seconds for quick insights.
+              <h3 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">Fast Processing</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Advanced AI analyzes your documents in seconds for quick insights and personalized responses.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
-              <div className="rounded-lg bg-purple-100 w-12 h-12 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            {/* Card 3 */}
+            <div className="bg-white rounded-xl p-5 sm:p-6 shadow-md border-2 border-orange-100 hover:shadow-xl hover:border-orange-200 transition-all sm:col-span-2 lg:col-span-1">
+              <div className="rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mb-3 sm:mb-4">
+                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Verified Information</h3>
-              <p className="text-sm text-gray-600">
-                All insights are based on trusted medical sources and guidelines.
+              <h3 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">Personalized Support</h3>
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Get tailored recommendations and assistance based on your specific needs and requirements.
               </p>
+            </div>
+          </div>
+
+          {/* Additional Info */}
+          <div className="mt-6 sm:mt-8 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-4 sm:p-6 border-2 border-orange-200">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="flex-shrink-0">
+                <div className="rounded-lg bg-orange-500 p-2 sm:p-2.5">
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                </div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">
+                  What can you upload?
+                </h4>
+                <ul className="space-y-1 text-xs sm:text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-0.5">•</span>
+                    <span>Event requirements and planning documents</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-0.5">•</span>
+                    <span>Corporate event proposals or RFPs</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-0.5">•</span>
+                    <span>Birthday party planning documents</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-0.5">•</span>
+                    <span>School trip authorization forms</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-orange-500 mt-0.5">•</span>
+                    <span>Any other relevant documents for your booking</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
